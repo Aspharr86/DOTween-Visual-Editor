@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 namespace DOTweenUtilities
 {
+    /// <summary> Change Image.color by Tweener. </summary>
     [RequireComponent(typeof(Image))]
     [DisplayOption("Image/Image.color")]
-    /// <summary> Change Image.color by Tweener. </summary>
     public class ImageColorTweener : TweenerBase<Color>
     {
         private Image image;

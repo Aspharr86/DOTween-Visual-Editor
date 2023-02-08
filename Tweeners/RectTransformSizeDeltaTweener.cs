@@ -3,9 +3,9 @@ using DG.Tweening;
 
 namespace DOTweenUtilities
 {
+    /// <summary> Change RectTransform.sizeDelta by Tweener. </summary>
     [RequireComponent(typeof(RectTransform))]
     [DisplayOption("RectTransform/RectTransform.sizeDelta")]
-    /// <summary> Change RectTransform.sizeDelta by Tweener. </summary>
     public class RectTransformSizeDeltaTweener : TweenerBase<Vector2>
     {
         private RectTransform rectTransform;
