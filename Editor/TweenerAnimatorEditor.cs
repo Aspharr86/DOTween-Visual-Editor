@@ -82,6 +82,8 @@ namespace DOTweenUtilities
             EditorGUILayout.EndHorizontal();
         }
 
+        // Reference:
+        // https://stackoverflow.com/questions/37775480/issubclassof-does-not-work-for-a-child-whose-parent-is-generic-unless-generic
         private bool IsSubclassOfGeneric(Type current, Type genericBase)
         {
             while ((current = current.BaseType) != null)

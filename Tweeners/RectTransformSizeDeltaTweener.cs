@@ -20,8 +20,9 @@ namespace DOTweenUtilities
             tweener?.Kill();
             tweener = DOTween.To(() => rectTransform.sizeDelta, x => rectTransform.sizeDelta = x, endValue, duration)
             .From(fromValue)
+            .SetDelay(delay)
             .SetEase(animationCurve)
-            .SetLoops(-1, loopType)
+            .SetLoops(loops, loopType)
             .SetAutoKill(false);
         }
     }

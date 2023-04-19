@@ -23,8 +23,9 @@ namespace DOTweenUtilities
                 if (value == 1f) gameObject.SetActive(endValue);
             })
             .From(0f)
+            .SetDelay(delay)
             .SetEase(animationCurve)
-            .SetLoops(-1, loopType)
+            .SetLoops(loops, loopType)
             .SetAutoKill(false);
         }
     }

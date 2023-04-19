@@ -15,7 +15,7 @@ namespace DOTweenUtilities
 
         [SerializeField] private protected float duration;
         public float Duration { get => duration; set => duration = value; }
-        [SerializeField] private protected AnimationCurve animationCurve;
+        [SerializeField] private protected AnimationCurve animationCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         public AnimationCurve AnimationCurve { get => animationCurve; set => animationCurve = value; }
         [SerializeField] private protected LoopType loopType;
         public LoopType LoopType { get => loopType; set => loopType = value; }
@@ -80,6 +80,10 @@ namespace DOTweenUtilities
 
     public abstract class TweenerBase<T> : TweenerBase
     {
+        [SerializeField] private protected float delay;
+        public float Delay { get => delay; set => delay = value; }
+        [SerializeField] private protected int loops = -1;
+        public int Loops { get => loops; set => loops = value; }
         [SerializeField] private protected T fromValue;
         public T FromValue { get => fromValue; set => fromValue = value; }
         [SerializeField] private protected T endValue;

@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace DOTweenUtilities
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(UnityEventInvokeAnimationEvent), true)]
     public class UnityEventInvokeAnimationEventEditor : Editor
     {

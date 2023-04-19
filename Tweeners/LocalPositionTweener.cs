@@ -16,8 +16,9 @@ namespace DOTweenUtilities
             tweener?.Kill();
             tweener = DOTween.To(() => transform.localPosition, x => transform.localPosition = x, endValue, duration)
             .From(fromValue)
+            .SetDelay(delay)
             .SetEase(animationCurve)
-            .SetLoops(-1, loopType)
+            .SetLoops(loops, loopType)
             .SetAutoKill(false);
         }
     }

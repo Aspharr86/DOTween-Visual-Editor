@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace DOTweenUtilities
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(TweenerAnimationPropertyBase<>), true)]
     public class TweenerAnimationPropertyBaseEditor : TweenerEditorBase
     {
@@ -14,8 +15,8 @@ namespace DOTweenUtilities
 
         private SerializedProperty serializedIsFromTween;
 
-        private SerializedProperty serializedFromValue;
-        private SerializedProperty serializedEndValue;
+        private protected SerializedProperty serializedFromValue;
+        private protected SerializedProperty serializedEndValue;
 
         private protected override void FindSerializedProperties()
         {
@@ -55,8 +56,8 @@ namespace DOTweenUtilities
             if (tweener.IsLoop) EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
 
             EditorGUILayout.PropertyField(serializedIsFromTween, new GUIContent("Is From Tween"));
-            if (tweener.IsFromTween) EditorGUILayout.PropertyField(serializedFromValue, new GUIContent("From Value"));
-            EditorGUILayout.PropertyField(serializedEndValue, new GUIContent("End Value"));
+            if (tweener.IsFromTween) SetFromValueLayout();
+            SetEndValueLayout();
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Play"))
@@ -78,6 +79,12 @@ namespace DOTweenUtilities
             }
             EditorGUILayout.EndHorizontal();
         }
+
+        private protected virtual void SetFromValueLayout()
+            => EditorGUILayout.PropertyField(serializedFromValue, new GUIContent("From Value"));
+
+        private protected virtual void SetEndValueLayout()
+            => EditorGUILayout.PropertyField(serializedEndValue, new GUIContent("End Value"));
     }
 }
 #endif
