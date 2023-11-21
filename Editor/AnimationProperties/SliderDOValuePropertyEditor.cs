@@ -9,7 +9,7 @@ namespace DOTweenUtilities
     public class SliderDOValuePropertyEditor : TweenerAnimationPropertyBaseEditor
     {
         private Slider slider;
-        public Slider Slider => slider ?? (slider = (target as SliderDOValueTweener).GetComponent<Slider>());
+        public Slider Slider => slider ?? (slider = (SerializedTarget.objectReferenceValue as Slider));
 
         private protected override void ValidateFromValue()
         {

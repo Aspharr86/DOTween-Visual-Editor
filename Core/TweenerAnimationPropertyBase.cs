@@ -15,7 +15,7 @@ namespace DOTweenUtilities
 
         [SerializeField] private protected float delay;
         public float Delay { get => delay; set => delay = value; }
-        [SerializeField] private protected int loops = -1;
+        [SerializeField] private protected int loops = 1;
         public int Loops { get => loops; set => loops = value; }
         [SerializeField] private protected T fromValue;
         public T FromValue { get => fromValue; set => fromValue = value; }

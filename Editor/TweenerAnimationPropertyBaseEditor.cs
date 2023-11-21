@@ -8,6 +8,7 @@ namespace DOTweenUtilities
     public class TweenerAnimationPropertyBaseEditor : TweenerEditorBase
     {
         private SerializedProperty serializedTarget;
+        public SerializedProperty SerializedTarget => serializedTarget;
 
         private SerializedProperty serializedDelay;
         private SerializedProperty serializedLoops;
@@ -47,6 +48,12 @@ namespace DOTweenUtilities
             EditorGUILayout.PropertyField(serializedOnDisableAction, new GUIContent("On Disable Action"));
 
             EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
+
+            if (serializedTarget.objectReferenceValue == null)
+            {
+                EditorGUILayout.HelpBox("Target is not assigned.", MessageType.Warning);
+                return;
+            }
 
             serializedDuration.floatValue = Mathf.Max(0f, serializedDuration.floatValue);
             EditorGUILayout.PropertyField(serializedDuration, new GUIContent("Duration"));
