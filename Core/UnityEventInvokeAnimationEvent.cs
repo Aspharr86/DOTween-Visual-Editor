@@ -7,15 +7,20 @@ namespace DOTweenUtilities
     /// <summary> Call UnityEvent.Invoke() by Tween. </summary>
     public class UnityEventInvokeAnimationEvent : TweenerAnimationEventBase
     {
-        [SerializeField] private UnityEvent unityEvent;
-        public UnityEvent UnityEvent { get => unityEvent; set => unityEvent = value; }
-
         /// <summary> Use DOVirtual.DelayedCall() to set up Tween. </summary>
         public override void SetTweener()
         {
             tween?.Kill();
-            tween = DOVirtual.DelayedCall(delay, () => unityEvent.Invoke())
+            tween = Clone(target);
+        }
+
+        public Tween Clone(UnityEvent target)
+        {
+            return DOVirtual.DelayedCall(delay, () => target.Invoke())
             .SetAutoKill(false);
         }
+
+        [SerializeField] private UnityEvent target;
+        public UnityEvent Target { get => target; set => target = value; }
     }
 }

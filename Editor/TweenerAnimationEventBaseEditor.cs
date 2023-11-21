@@ -1,13 +1,12 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
 namespace DOTweenUtilities
 {
-    [CustomEditor(typeof(TweenerAnimationEventBase<>), true)]
+    [CustomEditor(typeof(TweenerAnimationEventBase<,>), true)]
     public class TweenerAnimationEventBaseEditor : Editor
     {
-        private SerializedProperty serializedTweenedGameObject;
+        private SerializedProperty serializedTarget;
 
         private SerializedProperty serializedDelay;
 
@@ -20,7 +19,7 @@ namespace DOTweenUtilities
 
         private protected virtual void FindSerializedProperties()
         {
-            serializedTweenedGameObject = serializedObject.FindProperty("tweenedGameObject");
+            serializedTarget = serializedObject.FindProperty("target");
 
             serializedDelay = serializedObject.FindProperty("delay");
 
@@ -36,10 +35,11 @@ namespace DOTweenUtilities
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void SetInspector<T>(TweenerAnimationEventBase<T> tween)
+        private void SetInspector<T, U>(TweenerAnimationEventBase<T, U> tween) where U : UnityEngine.Object
         {
-            EditorGUILayout.PropertyField(serializedTweenedGameObject, new GUIContent("Tweened GameObject"));
+            EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
 
+            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
 
             EditorGUILayout.PropertyField(serializedParameter, new GUIContent("Parameter"));
@@ -49,11 +49,9 @@ namespace DOTweenUtilities
                 if (!EditorApplication.isPlaying)
                     return;
 
-                tween.GetTweenedComponent();
                 tween.SetTweener();
                 tween.Play();
             }
         }
     }
 }
-#endif

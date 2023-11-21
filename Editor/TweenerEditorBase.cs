@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 
 namespace DOTweenUtilities
@@ -28,4 +27,3 @@ namespace DOTweenUtilities
         }
     }
 }
-#endif

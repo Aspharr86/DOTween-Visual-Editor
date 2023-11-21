@@ -3,7 +3,7 @@ using DG.Tweening;
 
 namespace DOTweenUtilities
 {
-    enum OnDisableAction
+    public enum OnDisableAction
     {
         None, Pause, Stop
     }
@@ -22,31 +22,18 @@ namespace DOTweenUtilities
 
         private protected Tweener tweener;
 
-        /// <summary> Get the component of Tweener. </summary>
-        private protected abstract void Awake();
-
-        /// <summary> Use DOTween.To() to set up Tweener. </summary>
+        /// <summary> Set up Tweener. </summary>
         public abstract void SetTweener();
 
-        public void Play()
-        {
-            tweener?.Play();
-        }
+        public bool IsPlaying => (tweener?.IsPlaying()) ?? false;
 
-        public void Restart()
-        {
-            tweener?.Restart();
-        }
+        public void Play() => tweener?.Play();
 
-        public void Pause()
-        {
-            tweener?.Pause();
-        }
+        public void Restart() => tweener?.Restart();
 
-        public void Stop()
-        {
-            tweener?.Rewind();
-        }
+        public void Pause() => tweener?.Pause();
+
+        public void Stop() => tweener?.Rewind();
 
         private void OnEnable()
         {
@@ -78,8 +65,17 @@ namespace DOTweenUtilities
         }
     }
 
-    public abstract class TweenerBase<T> : TweenerBase
+    public abstract class TweenerBase<T, U> : TweenerBase where U : UnityEngine.Object
     {
+        public override void SetTweener()
+        {
+            tweener?.Kill();
+            tweener = Clone(Target);
+        }
+
+        public abstract U Target { get; }
+        public abstract Tweener Clone(U target);
+
         [SerializeField] private protected float delay;
         public float Delay { get => delay; set => delay = value; }
         [SerializeField] private protected int loops = -1;

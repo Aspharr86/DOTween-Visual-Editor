@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace DOTweenUtilities
         {
             types = (from domainAssembly in System.AppDomain.CurrentDomain.GetAssemblies()
                      from assemblyType in domainAssembly.GetTypes()
-                     where IsSubclassOfGeneric(assemblyType, typeof(TweenerBase<>))
+                     where IsSubclassOfGeneric(assemblyType, typeof(TweenerBase<,>))
                      select assemblyType).ToList();
 
             displayedOptions = new string[types.Count + 1];
@@ -69,4 +68,3 @@ namespace DOTweenUtilities
         }
     }
 }
-#endif

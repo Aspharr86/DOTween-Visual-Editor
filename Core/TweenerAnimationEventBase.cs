@@ -10,33 +10,18 @@ namespace DOTweenUtilities
 
         private protected Tween tween;
 
-        /// <summary> Override to get tweened component. </summary>
-        public virtual void GetTweenedComponent()
-        {
-        }
-
-        /// <summary> Use DOVirtual.DelayedCall() to set up Tween. </summary>
+        /// <summary> Set up Tweener. </summary>
         public abstract void SetTweener();
 
-        public void Play()
-        {
-            tween?.Play();
-        }
+        public bool IsPlaying => (tween?.IsPlaying()) ?? false;
 
-        public void Restart()
-        {
-            tween?.Restart();
-        }
+        public void Play() => tween?.Play();
 
-        public void Pause()
-        {
-            tween?.Pause();
-        }
+        public void Restart() => tween?.Restart();
 
-        public void Stop()
-        {
-            tween?.Rewind();
-        }
+        public void Pause() => tween?.Pause();
+
+        public void Stop() => tween?.Rewind();
 
         private void OnDestroy()
         {
@@ -44,19 +29,21 @@ namespace DOTweenUtilities
         }
     }
 
-    public abstract class TweenerAnimationEventBase<T> : TweenerAnimationEventBase
+    public abstract class TweenerAnimationEventBase<T, U> : TweenerAnimationEventBase where U : UnityEngine.Object
     {
-        [SerializeField] private protected GameObject tweenedGameObject;
-        public GameObject TweenedGameObject { get => tweenedGameObject; set => tweenedGameObject = value; }
+        /// <summary> Use DOVirtual.DelayedCall() to set up Tween. </summary>
+        public override void SetTweener()
+        {
+            tween?.Kill();
+            tween = Clone(target);
+        }
+
+        public abstract Tween Clone(U target);
+
+        [SerializeField] private protected U target;
+        public U Target { get => target; set => target = value; }
 
         [SerializeField] private protected T parameter;
         public T Parameter { get => parameter; set => parameter = value; }
-
-        private void Awake()
-        {
-            if (tweenedGameObject == null) return;
-
-            GetTweenedComponent();
-        }
     }
 }

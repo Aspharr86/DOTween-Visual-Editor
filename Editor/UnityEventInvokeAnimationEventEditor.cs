@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -10,7 +9,7 @@ namespace DOTweenUtilities
     {
         private SerializedProperty serializedDelay;
 
-        private SerializedProperty serializedUnityEvent;
+        private SerializedProperty serializedTarget;
 
         private void OnEnable()
         {
@@ -21,7 +20,7 @@ namespace DOTweenUtilities
         {
             serializedDelay = serializedObject.FindProperty("delay");
 
-            serializedUnityEvent = serializedObject.FindProperty("unityEvent");
+            serializedTarget = serializedObject.FindProperty("target");
         }
 
         public override void OnInspectorGUI()
@@ -35,9 +34,10 @@ namespace DOTweenUtilities
 
         private void SetInspector(UnityEventInvokeAnimationEvent tween)
         {
+            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
 
-            EditorGUILayout.PropertyField(serializedUnityEvent, new GUIContent("UnityEvent"));
+            EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
 
             if (GUILayout.Button("Play"))
             {
@@ -50,4 +50,3 @@ namespace DOTweenUtilities
         }
     }
 }
-#endif

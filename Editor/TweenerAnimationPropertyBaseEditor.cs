@@ -1,17 +1,16 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
 namespace DOTweenUtilities
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(TweenerAnimationPropertyBase<>), true)]
+    [CustomEditor(typeof(TweenerAnimationPropertyBase<,>), true)]
     public class TweenerAnimationPropertyBaseEditor : TweenerEditorBase
     {
-        private SerializedProperty serializedTweenedGameObject;
+        private SerializedProperty serializedTarget;
 
         private SerializedProperty serializedDelay;
-        private SerializedProperty serializedIsLoop;
+        private SerializedProperty serializedLoops;
 
         private SerializedProperty serializedIsFromTween;
 
@@ -22,10 +21,10 @@ namespace DOTweenUtilities
         {
             base.FindSerializedProperties();
 
-            serializedTweenedGameObject = serializedObject.FindProperty("tweenedGameObject");
+            serializedTarget = serializedObject.FindProperty("target");
 
             serializedDelay = serializedObject.FindProperty("delay");
-            serializedIsLoop = serializedObject.FindProperty("isLoop");
+            serializedLoops = serializedObject.FindProperty("loops");
 
             serializedIsFromTween = serializedObject.FindProperty("isFromTween");
 
@@ -42,21 +41,32 @@ namespace DOTweenUtilities
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void SetInspector<T>(TweenerAnimationPropertyBase<T> tweener)
+        private void SetInspector<T, U>(TweenerAnimationPropertyBase<T, U> tweener) where U : UnityEngine.Object
         {
             EditorGUILayout.PropertyField(serializedPlayOnAwake, new GUIContent("Play On Awake"));
             EditorGUILayout.PropertyField(serializedOnDisableAction, new GUIContent("On Disable Action"));
 
-            EditorGUILayout.PropertyField(serializedTweenedGameObject, new GUIContent("Tweened GameObject"));
+            EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
 
+            serializedDuration.floatValue = Mathf.Max(0f, serializedDuration.floatValue);
             EditorGUILayout.PropertyField(serializedDuration, new GUIContent("Duration"));
+            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
             EditorGUILayout.PropertyField(serializedAnimationCurve, new GUIContent("Animation Curve"));
-            EditorGUILayout.PropertyField(serializedIsLoop, new GUIContent("Is Loop"));
-            if (tweener.IsLoop) EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
+            serializedLoops.intValue = (serializedLoops.intValue < -1) ? -1 : serializedLoops.intValue;
+            EditorGUILayout.PropertyField(serializedLoops, new GUIContent("Loops", "Set to -1 for infinite loops"));
+            if (serializedLoops.intValue == -1 || serializedLoops.intValue > 1)
+            {
+                EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
+            }
 
             EditorGUILayout.PropertyField(serializedIsFromTween, new GUIContent("Is From Tween"));
-            if (tweener.IsFromTween) SetFromValueLayout();
+            if (tweener.IsFromTween)
+            {
+                ValidateFromValue();
+                SetFromValueLayout();
+            }
+            ValidateEndValue();
             SetEndValueLayout();
 
             EditorGUILayout.BeginHorizontal();
@@ -65,7 +75,6 @@ namespace DOTweenUtilities
                 if (!EditorApplication.isPlaying)
                     return;
 
-                tweener.GetTweenedComponent();
                 tweener.SetTweener();
                 tweener.Play();
             }
@@ -80,6 +89,10 @@ namespace DOTweenUtilities
             EditorGUILayout.EndHorizontal();
         }
 
+        private protected virtual void ValidateFromValue() { }
+
+        private protected virtual void ValidateEndValue() { }
+
         private protected virtual void SetFromValueLayout()
             => EditorGUILayout.PropertyField(serializedFromValue, new GUIContent("From Value"));
 
@@ -87,4 +100,3 @@ namespace DOTweenUtilities
             => EditorGUILayout.PropertyField(serializedEndValue, new GUIContent("End Value"));
     }
 }
-#endif

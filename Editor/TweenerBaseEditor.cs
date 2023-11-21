@@ -1,11 +1,10 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
 namespace DOTweenUtilities
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(TweenerBase<>), true)]
+    [CustomEditor(typeof(TweenerBase<,>), true)]
     public class TweenerBaseEditor : TweenerEditorBase
     {
         private SerializedProperty serializedDelay;
@@ -34,22 +33,25 @@ namespace DOTweenUtilities
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void SetInspector<T>(TweenerBase<T> tweener)
+        private void SetInspector<T, U>(TweenerBase<T, U> tweener) where U : UnityEngine.Object
         {
             EditorGUILayout.PropertyField(serializedPlayOnAwake, new GUIContent("Play On Awake"));
             EditorGUILayout.PropertyField(serializedOnDisableAction, new GUIContent("On Disable Action"));
 
+            serializedDuration.floatValue = Mathf.Max(0f, serializedDuration.floatValue);
             EditorGUILayout.PropertyField(serializedDuration, new GUIContent("Duration"));
+            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
             EditorGUILayout.PropertyField(serializedAnimationCurve, new GUIContent("Animation Curve"));
-            // EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
-            EditorGUILayout.PropertyField(serializedLoops, new GUIContent("Loops", "Set to -1 for infinite loops"));
             serializedLoops.intValue = (serializedLoops.intValue < -1) ? -1 : serializedLoops.intValue;
+            EditorGUILayout.PropertyField(serializedLoops, new GUIContent("Loops", "Set to -1 for infinite loops"));
             if (serializedLoops.intValue == -1 || serializedLoops.intValue > 1)
             {
                 EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
             }
 
+            ValidateFromValue();
+            ValidateEndValue();
             SetFromValueLayout();
             SetEndValueLayout();
 
@@ -73,6 +75,10 @@ namespace DOTweenUtilities
             EditorGUILayout.EndHorizontal();
         }
 
+        private protected virtual void ValidateFromValue() { }
+
+        private protected virtual void ValidateEndValue() { }
+
         private protected virtual void SetFromValueLayout()
             => EditorGUILayout.PropertyField(serializedFromValue, new GUIContent("From Value"));
 
@@ -80,4 +86,3 @@ namespace DOTweenUtilities
             => EditorGUILayout.PropertyField(serializedEndValue, new GUIContent("End Value"));
     }
 }
-#endif
