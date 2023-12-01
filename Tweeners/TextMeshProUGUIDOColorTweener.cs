@@ -14,12 +14,11 @@ namespace DOTweenUtilities
 
         public override Tweener Clone(TextMeshProUGUI target)
         {
-            return target.DOColor(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOColor(endValue, duration);
+            tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

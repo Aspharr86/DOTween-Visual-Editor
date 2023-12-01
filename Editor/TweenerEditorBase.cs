@@ -10,6 +10,7 @@ namespace DOTweenUtilities
         private protected SerializedProperty serializedDuration;
         private protected SerializedProperty serializedAnimationCurve;
         private protected SerializedProperty serializedLoopType;
+        private protected SerializedProperty serializedID;
 
         private void OnEnable()
         {
@@ -24,6 +25,7 @@ namespace DOTweenUtilities
             serializedDuration = serializedObject.FindProperty("duration");
             serializedAnimationCurve = serializedObject.FindProperty("animationCurve");
             serializedLoopType = serializedObject.FindProperty("loopType");
+            serializedID = serializedObject.FindProperty("iD");
         }
     }
 }

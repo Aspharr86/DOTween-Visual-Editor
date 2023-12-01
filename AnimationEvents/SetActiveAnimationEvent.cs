@@ -10,17 +10,15 @@ namespace DOTweenUtilities
     }
 
     /// <summary> Call GameObject.SetActive() by Tween. </summary>
-    public class SetActiveAnimationEvent : TweenerAnimationEventBase<SetActiveAnimationEventArgs>
+    public class SetActiveAnimationEvent : TweenerAnimationEventBase<SetActiveAnimationEventArgs, GameObject>
     {
-        public override void GetTweenedComponent()
+        public override Tween Clone(GameObject target)
         {
-        }
+            var tween = DOVirtual.DelayedCall(delay, () => target.SetActive(parameter.isActive));
+            if (!string.IsNullOrEmpty(iD)) tween.SetId(iD);
+            tween.SetAutoKill(false);
 
-        public override void SetTweener()
-        {
-            tween?.Kill();
-            tween = DOVirtual.DelayedCall(delay, () => tweenedGameObject.SetActive(parameter.isActive))
-            .SetAutoKill(false);
+            return tween;
         }
     }
 }

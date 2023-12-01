@@ -11,12 +11,11 @@ namespace DOTweenUtilities
 
         public override Tweener Clone(Transform target)
         {
-            return target.DOLocalRotate(endValue, duration, RotateMode.FastBeyond360)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOLocalRotate(endValue, duration, RotateMode.FastBeyond360);
+            tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace DOTweenUtilities
     public class UnityEventInvokeAnimationEventEditor : Editor
     {
         private SerializedProperty serializedDelay;
+        private SerializedProperty serializedID;
 
         private SerializedProperty serializedTarget;
 
@@ -19,6 +20,7 @@ namespace DOTweenUtilities
         private protected virtual void FindSerializedProperties()
         {
             serializedDelay = serializedObject.FindProperty("delay");
+            serializedID = serializedObject.FindProperty("iD");
 
             serializedTarget = serializedObject.FindProperty("target");
         }
@@ -36,6 +38,7 @@ namespace DOTweenUtilities
         {
             serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 
             EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
 

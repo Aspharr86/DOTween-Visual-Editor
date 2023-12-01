@@ -49,6 +49,7 @@ namespace DOTweenUtilities
             {
                 EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
             }
+            EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 
             ValidateFromValue();
             ValidateEndValue();
@@ -61,8 +62,13 @@ namespace DOTweenUtilities
                 if (!EditorApplication.isPlaying)
                     return;
 
-                tweener.SetTweener();
-                tweener.Play();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var item = targets[i] as TweenerBase<T, U>;
+
+                    item.SetTweener();
+                    item.Play();
+                }
             }
 
             if (GUILayout.Button("Stop"))
@@ -70,7 +76,12 @@ namespace DOTweenUtilities
                 if (!EditorApplication.isPlaying)
                     return;
 
-                tweener.Stop();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var item = targets[i] as TweenerBase<T, U>;
+
+                    item.Stop();
+                }
             }
             EditorGUILayout.EndHorizontal();
         }

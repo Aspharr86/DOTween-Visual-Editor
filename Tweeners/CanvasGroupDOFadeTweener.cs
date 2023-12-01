@@ -13,12 +13,11 @@ namespace DOTweenUtilities
 
         public override Tweener Clone(CanvasGroup target)
         {
-            return target.DOFade(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOFade(endValue, duration);
+            tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

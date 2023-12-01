@@ -9,18 +9,11 @@ namespace DOTweenUtilities
     {
         public override Tweener Clone(Transform target)
         {
-            return isFromTween ?
-            target.DOLocalMove(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false) :
-            target.DOLocalMove(endValue, duration)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOLocalMove(endValue, duration);
+            if (isFromTween) tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

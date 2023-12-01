@@ -17,12 +17,11 @@ namespace DOTweenUtilities
         public override Tweener Clone(ScrollRect target)
         {
             // To use FROM Tween
-            return (target.DONormalizedPos(endValue, duration) as TweenerCore<Vector2, Vector2, VectorOptions>)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DONormalizedPos(endValue, duration) as TweenerCore<Vector2, Vector2, VectorOptions>;
+            tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

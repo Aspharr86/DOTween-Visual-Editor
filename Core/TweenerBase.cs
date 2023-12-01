@@ -19,6 +19,8 @@ namespace DOTweenUtilities
         public AnimationCurve AnimationCurve { get => animationCurve; set => animationCurve = value; }
         [SerializeField] private protected LoopType loopType;
         public LoopType LoopType { get => loopType; set => loopType = value; }
+        [SerializeField] private protected string iD;
+        public string ID { get => iD; set => iD = value; }
 
         private protected Tweener tweener;
 

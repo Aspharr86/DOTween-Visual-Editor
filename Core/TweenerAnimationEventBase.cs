@@ -7,6 +7,8 @@ namespace DOTweenUtilities
     {
         [SerializeField] private protected float delay;
         public float Delay { get => delay; set => delay = value; }
+        [SerializeField] private protected string iD;
+        public string ID { get => iD; set => iD = value; }
 
         private protected Tween tween;
 

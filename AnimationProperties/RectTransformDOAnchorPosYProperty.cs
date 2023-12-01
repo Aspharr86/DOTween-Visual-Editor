@@ -9,18 +9,11 @@ namespace DOTweenUtilities
     {
         public override Tweener Clone(RectTransform target)
         {
-            return isFromTween ?
-            target.DOAnchorPosY(endValue, duration)
-            .From(new Vector2(target.anchoredPosition.x, fromValue))
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false) :
-            target.DOAnchorPosY(endValue, duration)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOAnchorPosY(endValue, duration);
+            if (isFromTween) tweener.From(new Vector2(target.anchoredPosition.x, fromValue));
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

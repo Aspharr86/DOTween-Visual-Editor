@@ -16,8 +16,11 @@ namespace DOTweenUtilities
 
         public Tween Clone(UnityEvent target)
         {
-            return DOVirtual.DelayedCall(delay, () => target.Invoke())
-            .SetAutoKill(false);
+            var tween = DOVirtual.DelayedCall(delay, () => target.Invoke());
+            if (!string.IsNullOrEmpty(iD)) tween.SetId(iD);
+            tween.SetAutoKill(false);
+
+            return tween;
         }
 
         [SerializeField] private UnityEvent target;

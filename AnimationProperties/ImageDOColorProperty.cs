@@ -10,18 +10,11 @@ namespace DOTweenUtilities
     {
         public override Tweener Clone(Image target)
         {
-            return isFromTween ?
-            target.DOColor(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false) :
-            target.DOColor(endValue, duration)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOColor(endValue, duration);
+            if (isFromTween) tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

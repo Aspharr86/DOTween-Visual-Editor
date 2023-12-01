@@ -13,12 +13,11 @@ namespace DOTweenUtilities
 
         public override Tweener Clone(RectTransform target)
         {
-            return target.DOSizeDelta(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOSizeDelta(endValue, duration);
+            tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

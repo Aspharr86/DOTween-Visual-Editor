@@ -6,6 +6,7 @@ using System;
 
 namespace DOTweenUtilities
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(TweenerAnimator))]
     public class TweenerAnimatorEditor : Editor
     {
@@ -21,7 +22,7 @@ namespace DOTweenUtilities
         {
             types = (from domainAssembly in System.AppDomain.CurrentDomain.GetAssemblies()
                      from assemblyType in domainAssembly.GetTypes()
-                     where IsSubclassOfGeneric(assemblyType, typeof(TweenerAnimationPropertyBase<,>))
+                     where TweenerUtilities.IsSubclassOfGeneric(assemblyType, typeof(TweenerAnimationPropertyBase<,>))
                      select assemblyType).ToList();
 
             displayedOptions = new string[types.Count + 1];
@@ -38,59 +39,66 @@ namespace DOTweenUtilities
         {
             base.OnInspectorGUI();
 
-            TweenerAnimator tweenerAnimator = target as TweenerAnimator;
-
             EditorGUILayout.BeginHorizontal();
             int selectedIndex = EditorGUILayout.Popup(0, displayedOptions);
             if (selectedIndex > 0)
             {
                 serializedObject.Update();
 
-                tweenerAnimator.gameObject.AddComponent(types[selectedIndex - 1]);
+                // https://stackoverflow.com/questions/33090386/editing-multiple-objects-in-gui-with-caneditmultipleobjects
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var animator = targets[i] as TweenerAnimator;
+
+                    animator.gameObject.AddComponent(types[selectedIndex - 1]);
+                }
 
                 serializedObject.ApplyModifiedProperties();
             }
 
             if (GUILayout.Button("Add new event"))
             {
-                tweenerAnimator.gameObject.AddComponent<UnityEventInvokeAnimationEvent>();
+                serializedObject.Update();
+
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var animator = targets[i] as TweenerAnimator;
+
+                    animator.gameObject.AddComponent<UnityEventInvokeAnimationEvent>();
+                }
+
+                serializedObject.ApplyModifiedProperties();
             }
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Play"))
             {
-                var animator = target as TweenerAnimator;
-
                 if (!EditorApplication.isPlaying)
                     return;
 
-                animator.GetTweenerComponents();
-                animator.Play();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var animator = targets[i] as TweenerAnimator;
+
+                    animator.GetTweenerComponents();
+                    animator.Play();
+                }
             }
 
             if (GUILayout.Button("Stop"))
             {
-                var animator = target as TweenerAnimator;
-
                 if (!EditorApplication.isPlaying)
                     return;
 
-                animator.Stop();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var animator = targets[i] as TweenerAnimator;
+
+                    animator.Stop();
+                }
             }
             EditorGUILayout.EndHorizontal();
-        }
-
-        // Reference:
-        // https://stackoverflow.com/questions/37775480/issubclassof-does-not-work-for-a-child-whose-parent-is-generic-unless-generic
-        private bool IsSubclassOfGeneric(Type current, Type genericBase)
-        {
-            while ((current = current.BaseType) != null)
-            {
-                if (current.IsGenericType && current.GetGenericTypeDefinition() == genericBase)
-                    return true;
-            }
-            return false;
         }
     }
 }

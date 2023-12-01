@@ -9,20 +9,15 @@ namespace DOTweenUtilities
     }
 
     /// <summary> Call ParticleSystem.Play() by Tween. </summary>
-    public class ParticleSystemPlayAnimationEvent : TweenerAnimationEventBase<AnimatorRebindAnimationEventArgs>
+    public class ParticleSystemPlayAnimationEvent : TweenerAnimationEventBase<AnimatorRebindAnimationEventArgs, ParticleSystem>
     {
-        private new ParticleSystem particleSystem;
-
-        public override void GetTweenedComponent()
+        public override Tween Clone(ParticleSystem target)
         {
-            particleSystem = tweenedGameObject.transform.GetComponent<ParticleSystem>();
-        }
+            var tween = DOVirtual.DelayedCall(delay, () => target.Play());
+            if (!string.IsNullOrEmpty(iD)) tween.SetId(iD);
+            tween.SetAutoKill(false);
 
-        public override void SetTweener()
-        {
-            tween?.Kill();
-            tween = DOVirtual.DelayedCall(delay, () => particleSystem.Play())
-            .SetAutoKill(false);
+            return tween;
         }
     }
 }

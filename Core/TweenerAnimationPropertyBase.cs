@@ -22,7 +22,7 @@ namespace DOTweenUtilities
         [SerializeField] private protected T endValue;
         public T EndValue { get => endValue; set => endValue = value; }
         [SerializeField] private protected U target;
-        public U Target => target;
+        public U Target { get => target; set => target = value; }
 
         [SerializeField] private protected bool isFromTween;
         public bool IsFromTween { get => isFromTween; set => isFromTween = value; }

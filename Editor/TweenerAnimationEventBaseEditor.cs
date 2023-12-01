@@ -9,6 +9,7 @@ namespace DOTweenUtilities
         private SerializedProperty serializedTarget;
 
         private SerializedProperty serializedDelay;
+        private SerializedProperty serializedID;
 
         private SerializedProperty serializedParameter;
 
@@ -22,6 +23,7 @@ namespace DOTweenUtilities
             serializedTarget = serializedObject.FindProperty("target");
 
             serializedDelay = serializedObject.FindProperty("delay");
+            serializedID = serializedObject.FindProperty("iD");
 
             serializedParameter = serializedObject.FindProperty("parameter");
         }
@@ -41,6 +43,7 @@ namespace DOTweenUtilities
 
             serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
             EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 
             EditorGUILayout.PropertyField(serializedParameter, new GUIContent("Parameter"));
 

@@ -29,18 +29,11 @@ namespace DOTweenUtilities
 
         public override Tweener Clone(TextMeshProUGUI target)
         {
-            return isFromTween ?
-            target.DOFade(endValue, duration)
-            .From(fromValue)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false) :
-            target.DOFade(endValue, duration)
-            .SetDelay(delay)
-            .SetEase(animationCurve)
-            .SetLoops(loops, loopType)
-            .SetAutoKill(false);
+            var tweener = target.DOFade(endValue, duration);
+            if (isFromTween) tweener.From(fromValue);
+            tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
+
+            return tweener;
         }
     }
 }

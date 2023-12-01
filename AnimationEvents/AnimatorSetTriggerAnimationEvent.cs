@@ -10,20 +10,15 @@ namespace DOTweenUtilities
     }
 
     /// <summary> Call Animator.SetTrigger() by Tween. </summary>
-    public class AnimatorSetTriggerAnimationEvent : TweenerAnimationEventBase<AnimatorSetTriggerAnimationEventArgs>
+    public class AnimatorSetTriggerAnimationEvent : TweenerAnimationEventBase<AnimatorSetTriggerAnimationEventArgs, Animator>
     {
-        private Animator animator;
-
-        public override void GetTweenedComponent()
+        public override Tween Clone(Animator target)
         {
-            animator = tweenedGameObject.transform.GetComponent<Animator>();
-        }
+            var tween = DOVirtual.DelayedCall(delay, () => target.SetTrigger(parameter.name));
+            if (!string.IsNullOrEmpty(iD)) tween.SetId(iD);
+            tween.SetAutoKill(false);
 
-        public override void SetTweener()
-        {
-            tween?.Kill();
-            tween = DOVirtual.DelayedCall(delay, () => animator.SetTrigger(parameter.name))
-            .SetAutoKill(false);
+            return tween;
         }
     }
 }

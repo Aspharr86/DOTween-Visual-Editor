@@ -9,20 +9,15 @@ namespace DOTweenUtilities
     }
 
     /// <summary> Call Animator.Rebind() by Tween. </summary>
-    public class AnimatorRebindAnimationEvent : TweenerAnimationEventBase<AnimatorRebindAnimationEventArgs>
+    public class AnimatorRebindAnimationEvent : TweenerAnimationEventBase<AnimatorRebindAnimationEventArgs, Animator>
     {
-        private Animator animator;
-
-        public override void GetTweenedComponent()
+        public override Tween Clone(Animator target)
         {
-            animator = tweenedGameObject.transform.GetComponent<Animator>();
-        }
+            var tween = DOVirtual.DelayedCall(delay, () => target.Rebind());
+            if (!string.IsNullOrEmpty(iD)) tween.SetId(iD);
+            tween.SetAutoKill(false);
 
-        public override void SetTweener()
-        {
-            tween?.Kill();
-            tween = DOVirtual.DelayedCall(delay, () => animator.Rebind())
-            .SetAutoKill(false);
+            return tween;
         }
     }
 }
