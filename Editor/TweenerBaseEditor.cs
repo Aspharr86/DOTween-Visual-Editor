@@ -38,16 +38,35 @@ namespace DOTweenUtilities
             EditorGUILayout.PropertyField(serializedPlayOnAwake, new GUIContent("Play On Awake"));
             EditorGUILayout.PropertyField(serializedOnDisableAction, new GUIContent("On Disable Action"));
 
-            serializedDuration.floatValue = Mathf.Max(0f, serializedDuration.floatValue);
-            EditorGUILayout.PropertyField(serializedDuration, new GUIContent("Duration"));
-            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
-            EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            EditorGUI.BeginChangeCheck();
+            {
+                EditorGUILayout.PropertyField(serializedDuration, new GUIContent("Duration"));
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedDuration.floatValue = Mathf.Max(0f, serializedDuration.floatValue);
+            }
+            EditorGUI.BeginChangeCheck();
+            {
+                EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
+            }
             EditorGUILayout.PropertyField(serializedAnimationCurve, new GUIContent("Animation Curve"));
             serializedLoops.intValue = (serializedLoops.intValue < -1) ? -1 : serializedLoops.intValue;
-            EditorGUILayout.PropertyField(serializedLoops, new GUIContent("Loops", "Set to -1 for infinite loops"));
-            if (serializedLoops.intValue == -1 || serializedLoops.intValue > 1)
+            EditorGUI.BeginChangeCheck();
             {
-                EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
+                EditorGUILayout.PropertyField(serializedLoops, new GUIContent("Loops", "Set to -1 for infinite loops"));
+                if (serializedLoops.intValue == -1 || serializedLoops.intValue > 1)
+                {
+                    EditorGUILayout.PropertyField(serializedLoopType, new GUIContent("Loop Type"));
+                }
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedLoops.intValue = (serializedLoops.intValue < -1) ? -1 : serializedLoops.intValue;
             }
             EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 

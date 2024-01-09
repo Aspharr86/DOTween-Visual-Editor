@@ -41,8 +41,14 @@ namespace DOTweenUtilities
         {
             EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
 
-            serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
-            EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            EditorGUI.BeginChangeCheck();
+            {
+                EditorGUILayout.PropertyField(serializedDelay, new GUIContent("Delay"));
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedDelay.floatValue = Mathf.Max(0f, serializedDelay.floatValue);
+            }
             EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 
             EditorGUILayout.PropertyField(serializedParameter, new GUIContent("Parameter"));
