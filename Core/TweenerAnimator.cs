@@ -4,24 +4,20 @@ namespace DOTweenUtilities
 {
     public class TweenerAnimator : MonoBehaviour
     {
-        private ITweenerComponent[] tweenerAnimationProperties;
+        private ITweenerComponent[] _tweenerComponents;
+        private ITweenerComponent[] tweenerComponents => _tweenerComponents ??= GetComponentsInChildren<ITweenerComponent>();
 
-        private void Awake()
+        public void RefreshTweenerComponents()
         {
-            GetTweenerComponents();
-        }
-
-        public void GetTweenerComponents()
-        {
-            tweenerAnimationProperties = GetComponentsInChildren<ITweenerComponent>();
+            _tweenerComponents = GetComponentsInChildren<ITweenerComponent>();
         }
 
         public bool IsPlaying
         {
             get
             {
-                for (int i = 0; i < tweenerAnimationProperties.Length; i++)
-                    if (tweenerAnimationProperties[i].IsPlaying)
+                for (int i = 0; i < tweenerComponents.Length; i++)
+                    if (tweenerComponents[i].IsPlaying)
                         return true;
                 return false;
             }
@@ -29,34 +25,34 @@ namespace DOTweenUtilities
 
         public void Play()
         {
-            for (int i = 0; i < tweenerAnimationProperties.Length; i++)
+            for (int i = 0; i < tweenerComponents.Length; i++)
             {
-                tweenerAnimationProperties[i].SetTweener();
-                tweenerAnimationProperties[i].Play();
+                tweenerComponents[i].SetTweener();
+                tweenerComponents[i].Play();
             }
         }
 
         public void Restart()
         {
-            for (int i = 0; i < tweenerAnimationProperties.Length; i++)
+            for (int i = 0; i < tweenerComponents.Length; i++)
             {
-                tweenerAnimationProperties[i].Restart();
+                tweenerComponents[i].Restart();
             }
         }
 
         public void Pause()
         {
-            for (int i = 0; i < tweenerAnimationProperties.Length; i++)
+            for (int i = 0; i < tweenerComponents.Length; i++)
             {
-                tweenerAnimationProperties[i].Pause();
+                tweenerComponents[i].Pause();
             }
         }
 
         public void Stop()
         {
-            for (int i = 0; i < tweenerAnimationProperties.Length; i++)
+            for (int i = 0; i < tweenerComponents.Length; i++)
             {
-                tweenerAnimationProperties[i].Stop();
+                tweenerComponents[i].Stop();
             }
         }
     }

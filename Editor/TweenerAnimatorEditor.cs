@@ -81,7 +81,6 @@ namespace DOTweenUtilities
                 {
                     var animator = targets[i] as TweenerAnimator;
 
-                    animator.GetTweenerComponents();
                     animator.Play();
                 }
             }
