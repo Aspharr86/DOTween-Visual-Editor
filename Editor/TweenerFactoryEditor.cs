@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
@@ -20,17 +21,18 @@ namespace DOTweenUtilities
 
         private void InitializeDisplayedOptions()
         {
-            types = (from domainAssembly in System.AppDomain.CurrentDomain.GetAssemblies()
-                     from assemblyType in domainAssembly.GetTypes()
-                     where TweenerUtilities.IsSubclassOfGeneric(assemblyType, typeof(TweenerBase<,>))
-                     select assemblyType).ToList();
+            types = (from type in Assembly.Load("Assembly-CSharp").GetTypes()
+                     where type.Namespace == nameof(DOTweenUtilities)
+                     where TweenerUtilities.IsSubclassOfGeneric(type, typeof(TweenerBase<,>))
+                     where type.GetCustomAttribute<DisplayOptionAttribute>() is not null
+                     select type).ToList();
 
             displayedOptions = new string[types.Count + 1];
             displayedOptions[0] = "Add new tweener";
 
             for (int i = 0; i < types.Count; i++)
             {
-                var attribute = Attribute.GetCustomAttribute(types[i], typeof(DisplayOptionAttribute)) as DisplayOptionAttribute;
+                var attribute = types[i].GetCustomAttribute<DisplayOptionAttribute>();
                 displayedOptions[i + 1] = attribute.Name;
             }
         }
@@ -48,7 +50,10 @@ namespace DOTweenUtilities
                 {
                     var factory = targets[i] as TweenerFactory;
 
-                    factory.gameObject.AddComponent(types[selectedIndex - 1]);
+                    // Reference:
+                    // https://docs.unity3d.com/ScriptReference/Undo.html
+                    // Use Undo.AddComponent to correctly add a component which can be handle by the undo system
+                    Undo.AddComponent(factory.gameObject, types[selectedIndex - 1]);
                 }
 
                 serializedObject.ApplyModifiedProperties();
@@ -60,8 +65,7 @@ namespace DOTweenUtilities
                 {
                     var factory = targets[i] as TweenerFactory;
 
-                    // Destroy may not be called from edit mode! Use DestroyImmediate instead.
-                    DestroyImmediate(factory.transform.GetComponent<TweenerFactory>());
+                    Undo.DestroyObjectImmediate(factory);
                 }
             }
         }

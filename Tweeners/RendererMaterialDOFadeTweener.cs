@@ -1,16 +1,15 @@
-using UnityEngine;
 using DG.Tweening;
-using TMPro;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change TextMeshProUGUI.color.a by Tweener. </summary>
-    [RequireComponent(typeof(TextMeshProUGUI))]
-    [DisplayOption("TextMeshProUGUI/TextMeshProUGUI.color.a")]
-    public class TextMeshProUGUIDOFadeTweener : TweenerBase<float, TextMeshProUGUI>
+    public class RendererMaterialDOFadeTweener<T> : TweenerBase<float, T> where T : Renderer
     {
-        private TextMeshProUGUI textMeshProUGUI;
-        public override TextMeshProUGUI Target => textMeshProUGUI ?? (textMeshProUGUI = transform.GetComponent<TextMeshProUGUI>());
+        private new T renderer;
+        public override T Target => renderer ??= transform.GetComponent<T>();
+
+        [SerializeField] private string shaderPropertyName;
+        public string ShaderPropertyName { get => shaderPropertyName; set => shaderPropertyName = value; }
 
         // Use DOVirtual.DelayedCall to prevent DOColor from fighting with DOFade.
         //
@@ -31,9 +30,11 @@ namespace DOTweenUtilities
             tweener = Clone(Target);
         }
 
-        public override Tweener Clone(TextMeshProUGUI target)
+        public override Tweener Clone(T target)
         {
-            var tweener = target.DOFade(endValue, duration);
+            var tweener = (shaderPropertyName == string.Empty) ?
+                target.material.DOFade(endValue, duration) : // Material.color
+                target.material.DOFade(endValue, shaderPropertyName, duration); // Material.SetColor()
             tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 

@@ -1,15 +1,14 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change SpriteRenderer.color by Tweener. </summary>
     [RequireComponent(typeof(SpriteRenderer))]
-    [DisplayOption("SpriteRenderer/SpriteRenderer.color")]
+    [DisplayOption("SpriteRenderer/DOColor")]
     public class SpriteRendererDOColorTweener : TweenerBase<Color, SpriteRenderer>
     {
         private SpriteRenderer spriteRenderer;
-        public override SpriteRenderer Target => spriteRenderer ?? (spriteRenderer = transform.GetComponent<SpriteRenderer>());
+        public override SpriteRenderer Target => spriteRenderer ??= transform.GetComponent<SpriteRenderer>();
 
         public override Tweener Clone(SpriteRenderer target)
         {

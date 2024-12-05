@@ -1,5 +1,5 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
@@ -75,6 +75,8 @@ namespace DOTweenUtilities
             SetFromValueLayout();
             SetEndValueLayout();
 
+            SetAdditionalParametersLayout();
+
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Play"))
             {
@@ -114,5 +116,7 @@ namespace DOTweenUtilities
 
         private protected virtual void SetEndValueLayout()
             => EditorGUILayout.PropertyField(serializedEndValue, new GUIContent("End Value"));
+
+        private protected virtual void SetAdditionalParametersLayout() { }
     }
 }
