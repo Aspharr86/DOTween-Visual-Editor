@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Reflection;
 
 namespace DOTweenUtilities
 {
@@ -20,13 +21,14 @@ namespace DOTweenUtilities
 
         private void InitializeDisplayedOptions()
         {
-            types = (from domainAssembly in System.AppDomain.CurrentDomain.GetAssemblies()
-                     from assemblyType in domainAssembly.GetTypes()
-                     where TweenerUtilities.IsSubclassOfGeneric(assemblyType, typeof(TweenerAnimationPropertyBase<,>))
-                     select assemblyType).ToList();
+            types = (from type in Assembly.Load("Assembly-CSharp").GetTypes()
+                     where type.Namespace == nameof(DOTweenUtilities)
+                     where TweenerUtilities.IsSubclassOfGeneric(type, typeof(TweenerBase<,>))
+                     where type.GetCustomAttribute<DisplayOptionAttribute>() != null
+                     select type).ToList();
 
             displayedOptions = new string[types.Count + 1];
-            displayedOptions[0] = "Add new animation property";
+            displayedOptions[0] = "Add new tweener";
 
             for (int i = 0; i < types.Count; i++)
             {

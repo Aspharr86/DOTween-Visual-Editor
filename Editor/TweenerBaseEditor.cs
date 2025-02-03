@@ -7,8 +7,13 @@ namespace DOTweenUtilities
     [CustomEditor(typeof(TweenerBase<,>), true)]
     public class TweenerBaseEditor : TweenerEditorBase
     {
-        private SerializedProperty serializedDelay;
-        private SerializedProperty serializedLoops;
+        private protected SerializedProperty serializedTargetType;
+        private protected SerializedProperty serializedTarget;
+
+        private protected SerializedProperty serializedDelay;
+        private protected SerializedProperty serializedLoops;
+
+        private protected SerializedProperty serializedTweenType;
 
         private protected SerializedProperty serializedFromValue;
         private protected SerializedProperty serializedEndValue;
@@ -17,8 +22,13 @@ namespace DOTweenUtilities
         {
             base.FindSerializedProperties();
 
+            serializedTargetType = serializedObject.FindProperty("targetType");
+            serializedTarget = serializedObject.FindProperty("target");
+
             serializedDelay = serializedObject.FindProperty("delay");
             serializedLoops = serializedObject.FindProperty("loops");
+
+            serializedTweenType = serializedObject.FindProperty("tweenType");
 
             serializedFromValue = serializedObject.FindProperty("fromValue");
             serializedEndValue = serializedObject.FindProperty("endValue");
@@ -35,8 +45,19 @@ namespace DOTweenUtilities
 
         private void SetInspector<T, U>(TweenerBase<T, U> tweener) where U : UnityEngine.Object
         {
-            EditorGUILayout.PropertyField(serializedPlayOnAwake, new GUIContent("Play On Awake"));
-            EditorGUILayout.PropertyField(serializedOnDisableAction, new GUIContent("On Disable Action"));
+            EditorGUILayout.PropertyField(serializedTargetType, new GUIContent("Target Type"));
+            if (serializedTargetType.enumValueIndex == (int)TargetType.OTHER)
+            {
+                EditorGUILayout.PropertyField(serializedTarget, new GUIContent("Target"));
+                if (serializedTarget.objectReferenceValue == null)
+                {
+                    EditorGUILayout.HelpBox("Target is not assigned.", MessageType.Warning);
+                    return;
+                }
+            }
+
+            EditorGUILayout.PropertyField(serializedOnEnableBehavior, new GUIContent("On Enable Behavior"));
+            EditorGUILayout.PropertyField(serializedOnDisableBehavior, new GUIContent("On Disable Behavior"));
 
             EditorGUI.BeginChangeCheck();
             {
@@ -70,12 +91,29 @@ namespace DOTweenUtilities
             }
             EditorGUILayout.PropertyField(serializedID, new GUIContent("ID"));
 
-            ValidateFromValue();
+            EditorGUILayout.PropertyField(serializedTweenType, new GUIContent("Tween Type"));
+            if (serializedTweenType.enumValueIndex == (int)TweenType.FROM)
+            {
+                ValidateFromValue();
+                SetFromValueLayout();
+            }
             ValidateEndValue();
-            SetFromValueLayout();
             SetEndValueLayout();
 
             SetAdditionalParametersLayout();
+
+            if (GUILayout.Button("Set Tweener"))
+            {
+                if (!EditorApplication.isPlaying)
+                    return;
+
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var item = targets[i] as TweenerBase<T, U>;
+
+                    item.SetTweener();
+                }
+            }
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Play"))
@@ -87,7 +125,34 @@ namespace DOTweenUtilities
                 {
                     var item = targets[i] as TweenerBase<T, U>;
 
-                    item.SetTweener();
+                    item.Restart();
+                }
+            }
+
+            if (GUILayout.Button("Pause"))
+            {
+                if (!EditorApplication.isPlaying)
+                    return;
+
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var item = targets[i] as TweenerBase<T, U>;
+
+                    item.Pause();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Resume"))
+            {
+                if (!EditorApplication.isPlaying)
+                    return;
+
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    var item = targets[i] as TweenerBase<T, U>;
+
                     item.Play();
                 }
             }

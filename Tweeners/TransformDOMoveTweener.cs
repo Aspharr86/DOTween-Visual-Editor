@@ -1,18 +1,20 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change Transform.position by Tweener. </summary>
-    [DisplayOption("Transform/Transform.position")]
+    [DisplayOption("Transform/DOMove")]
     public class TransformDOMoveTweener : TweenerBase<Vector3, Transform>
     {
-        public override Transform Target => transform;
+        public override Transform SelfTarget => transform;
+
+        [SerializeField] private bool snapping;
+        public bool Snapping { get => snapping; set => snapping = value; }
 
         public override Tweener Clone(Transform target)
         {
-            var tweener = target.DOMove(endValue, duration);
-            tweener.From(fromValue);
+            var tweener = target.DOMove(endValue, duration, snapping);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;

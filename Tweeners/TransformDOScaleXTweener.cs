@@ -1,18 +1,17 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change Transform.localScale.x by Tweener. </summary>
-    [DisplayOption("Transform/Transform.localScale.x")]
+    [DisplayOption("Transform/DOScaleX")]
     public class TransformDOScaleXTweener : TweenerBase<float, Transform>
     {
-        public override Transform Target => transform;
+        public override Transform SelfTarget => transform;
 
         public override Tweener Clone(Transform target)
         {
             var tweener = target.DOScaleX(endValue, duration);
-            tweener.From(fromValue);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;

@@ -1,20 +1,21 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change RectTransform.sizeDelta by Tweener. </summary>
-    [RequireComponent(typeof(RectTransform))]
-    [DisplayOption("RectTransform/RectTransform.sizeDelta")]
+    [DisplayOption("RectTransform/DOSizeDelta")]
     public class RectTransformDOSizeDeltaTweener : TweenerBase<Vector2, RectTransform>
     {
         private RectTransform rectTransform;
-        public override RectTransform Target => rectTransform ?? (rectTransform = transform.GetComponent<RectTransform>());
+        public override RectTransform SelfTarget => rectTransform ??= transform.GetComponent<RectTransform>();
+
+        [SerializeField] private bool snapping;
+        public bool Snapping { get => snapping; set => snapping = value; }
 
         public override Tweener Clone(RectTransform target)
         {
-            var tweener = target.DOSizeDelta(endValue, duration);
-            tweener.From(fromValue);
+            var tweener = target.DOSizeDelta(endValue, duration, snapping);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;

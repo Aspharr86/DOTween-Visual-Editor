@@ -1,16 +1,13 @@
-using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
 namespace DOTweenUtilities
 {
-    /// <summary> Change Image.color.a by Tweener. </summary>
-    [RequireComponent(typeof(Image))]
-    [DisplayOption("Image/Image.color.a")]
+    [DisplayOption("Image/DOFade")]
     public class ImageDOFadeTweener : TweenerBase<float, Image>
     {
         private Image image;
-        public override Image Target => image ?? (image = transform.GetComponent<Image>());
+        public override Image SelfTarget => image ??= transform.GetComponent<Image>();
 
         // Use DOVirtual.DelayedCall to prevent DOColor from fighting with DOFade.
         //
@@ -34,7 +31,7 @@ namespace DOTweenUtilities
         public override Tweener Clone(Image target)
         {
             var tweener = target.DOFade(endValue, duration);
-            tweener.From(fromValue);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;

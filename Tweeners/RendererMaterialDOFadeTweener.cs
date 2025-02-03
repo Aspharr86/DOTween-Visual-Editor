@@ -6,7 +6,7 @@ namespace DOTweenUtilities
     public class RendererMaterialDOFadeTweener<T> : TweenerBase<float, T> where T : Renderer
     {
         private new T renderer;
-        public override T Target => renderer ??= transform.GetComponent<T>();
+        public override T SelfTarget => renderer ??= transform.GetComponent<T>();
 
         [SerializeField] private string shaderPropertyName;
         public string ShaderPropertyName { get => shaderPropertyName; set => shaderPropertyName = value; }
@@ -35,7 +35,7 @@ namespace DOTweenUtilities
             var tweener = (shaderPropertyName == string.Empty) ?
                 target.material.DOFade(endValue, duration) : // Material.color
                 target.material.DOFade(endValue, shaderPropertyName, duration); // Material.SetColor()
-            tweener.From(fromValue);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;

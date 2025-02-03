@@ -1,17 +1,50 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    public enum OnDisableAction
+    public enum OnEnableBehavior
     {
-        None, Pause, Stop
+        None,
+        Play,
+        Resume,
+    }
+
+    public enum OnDisableBehavior
+    {
+        None,
+        Pause,
+        Stop,
+    }
+
+    public enum TargetType
+    {
+        SELF,
+        OTHER,
+    }
+
+    public enum TweenType
+    {
+        TO,
+        FROM,
     }
 
     public abstract class TweenerBase : MonoBehaviour
     {
-        [SerializeField] private protected bool playOnAwake;
-        [SerializeField] private protected OnDisableAction onDisableAction;
+        [SerializeField] private OnEnableBehavior onEnableBehavior;
+        /// <summary> Gets or sets the behavior to execute when the GameObject is enabled. </summary>
+        public OnEnableBehavior OnEnableBehavior
+        {
+            get => onEnableBehavior;
+            set => onEnableBehavior = value;
+        }
+        [SerializeField] private OnDisableBehavior onDisableBehavior;
+        /// <summary> Gets or sets the behavior to execute when the GameObject is disabled. </summary>
+        public OnDisableBehavior OnDisableBehavior
+        {
+            get => onDisableBehavior;
+            set => onDisableBehavior = value;
+        }
 
         [SerializeField] private protected float duration;
         public float Duration { get => duration; set => duration = value; }
@@ -29,33 +62,39 @@ namespace DOTweenUtilities
 
         public bool IsPlaying => (tweener?.IsPlaying()) ?? false;
 
-        public void Play() => tweener?.Play();
+        public abstract void Play();
 
-        public void Restart() => tweener?.Restart();
+        public abstract void Restart();
 
-        public void Pause() => tweener?.Pause();
+        public abstract void Pause();
 
-        public void Stop() => tweener?.Rewind();
+        public abstract void Stop();
 
         private void OnEnable()
         {
-            if (playOnAwake)
+            switch (onEnableBehavior)
             {
-                SetTweener();
+                case OnEnableBehavior.None:
+                    break;
+                case OnEnableBehavior.Play:
+                    Restart();
+                    break;
+                case OnEnableBehavior.Resume:
+                    Play();
+                    break;
             }
-            Play();
         }
 
         private void OnDisable()
         {
-            switch (onDisableAction)
+            switch (onDisableBehavior)
             {
-                case OnDisableAction.None:
+                case OnDisableBehavior.None:
                     break;
-                case OnDisableAction.Pause:
+                case OnDisableBehavior.Pause:
                     Pause();
                     break;
-                case OnDisableAction.Stop:
+                case OnDisableBehavior.Stop:
                     Stop();
                     break;
             }
@@ -67,21 +106,51 @@ namespace DOTweenUtilities
         }
     }
 
-    public abstract class TweenerBase<T, U> : TweenerBase where U : UnityEngine.Object
+    public abstract class TweenerBase<T, U> : TweenerBase, ITweenerComponent where U : UnityEngine.Object
     {
         public override void SetTweener()
         {
             tweener?.Kill();
-            tweener = Clone(Target);
+            tweener = Clone(TargetType == TargetType.SELF ? SelfTarget : Target);
         }
 
-        public abstract U Target { get; }
+        public override void Play()
+        {
+            tweener ??= Clone(TargetType == TargetType.SELF ? SelfTarget : Target);
+            tweener.Play();
+        }
+
+        public override void Restart()
+        {
+            tweener ??= Clone(TargetType == TargetType.SELF ? SelfTarget : Target);
+            tweener.Restart();
+        }
+
+        public override void Pause()
+        {
+            tweener ??= Clone(TargetType == TargetType.SELF ? SelfTarget : Target);
+            tweener.Pause();
+        }
+
+        public override void Stop()
+        {
+            tweener ??= Clone(TargetType == TargetType.SELF ? SelfTarget : Target);
+            tweener.Rewind();
+        }
+
         public abstract Tweener Clone(U target);
 
+        [SerializeField] private protected TargetType targetType;
+        public TargetType TargetType { get => targetType; set => targetType = value; }
+        public abstract U SelfTarget { get; }
+        [SerializeField] private protected U target;
+        public U Target { get => target; set => target = value; }
         [SerializeField] private protected float delay;
         public float Delay { get => delay; set => delay = value; }
-        [SerializeField] private protected int loops = -1;
+        [SerializeField] private protected int loops = 1;
         public int Loops { get => loops; set => loops = value; }
+        [SerializeField] private protected TweenType tweenType;
+        public TweenType TweenType { get => tweenType; set => tweenType = value; }
         [SerializeField] private protected T fromValue;
         public T FromValue { get => fromValue; set => fromValue = value; }
         [SerializeField] private protected T endValue;

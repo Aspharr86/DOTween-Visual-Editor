@@ -3,12 +3,11 @@ using UnityEngine;
 
 namespace DOTweenUtilities
 {
-    [RequireComponent(typeof(SpriteRenderer))]
     [DisplayOption("SpriteRenderer/DOFade")]
     public class SpriteRendererDOFadeTweener : TweenerBase<float, SpriteRenderer>
     {
         private SpriteRenderer spriteRenderer;
-        public override SpriteRenderer Target => spriteRenderer ??= transform.GetComponent<SpriteRenderer>();
+        public override SpriteRenderer SelfTarget => spriteRenderer ??= transform.GetComponent<SpriteRenderer>();
 
         // Use DOVirtual.DelayedCall to prevent DOColor from fighting with DOFade.
         //
@@ -32,7 +31,7 @@ namespace DOTweenUtilities
         public override Tweener Clone(SpriteRenderer target)
         {
             var tweener = target.DOFade(endValue, duration);
-            tweener.From(fromValue);
+            if (TweenType == TweenType.FROM) tweener.From(fromValue);
             tweener.SetTweenerParameters(delay, animationCurve, loops, loopType, iD);
 
             return tweener;
